@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Atributos {
+  id String @id @default(uuid())
+  nome String
+  ativo Boolean? @default(true)
+  valores_atributos ValoresAtributos[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("atributos")
+}
+
+model ValoresAtributos {
+  id String @id @default(uuid())
+  id_atributo String
+  valor String
+  ativo Boolean? @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  atributo Atributos @relation(fields: [id_atributo], references: [id])
+  @@map("valores_atributos")
+}
+
+model Categorias {
+  id String @id @default(uuid())
+  nome String
+  ativo Boolean
+  produtos Produtos[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("categorias")
+}
+
+model Produtos {
+  id String @id @default(uuid())
+  id_categoria String
+  nome String
+  descricao String?
+  ativo Boolean
+  categoria Categorias @relation(fields: [id_categoria], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  variantes Variantes[]
+
+  @@map("produtos")
+}
+
+model Variantes {
+  id String @id @default(uuid())
+  id_produto String
+  sku String
+  preco Float
+  comprimento Float
+  estoque Float
+  peso Float
+  combo Boolean
+  altura Float
+  largura Float
+  ativo Boolean
+  json_caracteristicas Json
+  principal Boolean
+
+  produto Produtos @relation(fields: [id_produto], references: [id])  
+
+  variantes_valores VariantesValores[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("variantes")
+}
+
+model VariantesValores {
+  id String @id @default(uuid())
+  id_variante String
+  id_valor_atributo String
+  ativo Boolean
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  variante Variantes @relation(fields: [id_variante], references: [id])
+
+  @@map("variantes_valores")
+}

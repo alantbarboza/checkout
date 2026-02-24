@@ -1,0 +1,55 @@
+import { PrismaFactory } from "../factories/PrismaFactory";
+import { Atributos } from "../models/Atributos"; 
+
+class AtributosRepository {
+
+    async adicionar(dados: Atributos){
+        return await PrismaFactory.atributos.create({
+            data: dados
+        });
+    };
+
+    async editar(dados: Atributos, id_atributo: string){
+        try {
+            return await PrismaFactory.atributos.update({
+                where: {
+                    id: id_atributo
+                },
+                data: dados
+            })
+        } catch (error: any) {
+            if (error.code === 'P2025') {
+                throw new Error(`Atributo com ID ${id_atributo} não encontrado`);
+            }
+            throw error;
+        }
+    }
+
+    async buscarTodos(){
+        return await PrismaFactory.atributos.findMany({
+            where: {
+                ativo: true
+            },
+            include: {
+                valores_atributos: {
+                    where: {
+                        ativo: true
+                    }
+                }
+            }
+        });
+    }
+
+    async excluir(id: string){
+        return await PrismaFactory.atributos.update({
+            where: {
+                id
+            },
+            data: {
+                ativo: false
+            }
+        });
+    }
+}
+
+export default AtributosRepository;

@@ -65,6 +65,7 @@ Crie um arquivo `.env` na raiz do projeto:
 DATABASE_URL="sua_string_de_conexao"
 PORT=3000
 ```
+---
 
 ## Banco de Dados
 
